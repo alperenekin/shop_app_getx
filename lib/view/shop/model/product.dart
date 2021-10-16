@@ -8,8 +8,7 @@ class Product {
   String? category;
   String? image;
   Rating? rating;
-
-  final isFavourite = false.obs;
+  bool isFavourite = false;
 
 
   Product(
@@ -37,10 +36,6 @@ class Product {
     }else{
       return value;
     }
-  }
-
-  void changeFavourite(){
-    isFavourite.value = !isFavourite.value;
   }
 
   Map<String, dynamic> toJson() {

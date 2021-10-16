@@ -6,8 +6,8 @@ import 'package:shop_app_getx/view/shop/service/product_service.dart';
 class ShopController extends GetxController{
   late IProductService _productService;
 
-  var isLoading = false.obs;
-  List<Product?>? productList = List<Product>.empty().obs;
+  var isLoading = false;
+  List<Product?>? productList = List<Product>.empty();
 
   @override
   void onInit() {
@@ -18,13 +18,21 @@ class ShopController extends GetxController{
   }
 
   void fetchProducts() async {
-    isLoading(true);
+    changeLoading();
     var products = await _productService.getAllProducts();
     if(products != null){
       productList = products;
     }
-    isLoading(false);
-
+    changeLoading();
+    update();
   }
 
+  void changeLoading(){
+    isLoading = !isLoading;
+  }
+
+  void changeFavourite(int index){
+    productList?[index]?.isFavourite = !(productList![index]!.isFavourite);
+    update();
+  }
 }

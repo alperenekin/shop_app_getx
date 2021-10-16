@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_getx_widget.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:shop_app_getx/core/extension/content_extension.dart';
 import 'package:shop_app_getx/view/shop/controller/shop_controller.dart';
 
@@ -16,16 +15,14 @@ class ShopView extends StatelessWidget {
     );
   }
 
-  GetX buildObxBody(BuildContext context) {
-    return GetX<ShopController>(
-      init: ShopController(),
-      initState: (_) {},
-      builder: (controller) {
-        return controller.isLoading.value
-            ? Center(child: CircularProgressIndicator())
-            : buildShopGridView(context,controller);
-      },
-    );
+  GetBuilder buildObxBody(BuildContext context) {
+    return GetBuilder<ShopController>(
+        init: ShopController(),
+        builder: (controller) {
+          return controller.isLoading
+              ? Center(child: CircularProgressIndicator())
+              : buildShopGridView(context, controller);
+        });
   }
 
   GridView buildShopGridView(BuildContext context, ShopController controller) {
@@ -52,7 +49,8 @@ class ShopView extends StatelessWidget {
     );
   }
 
-  Padding productTitle(BuildContext context, int index, ShopController controller) {
+  Padding productTitle(BuildContext context, int index,
+      ShopController controller) {
     return Padding(
       padding: context.paddingLowHorizontal,
       child: Text(
@@ -62,7 +60,8 @@ class ShopView extends StatelessWidget {
     );
   }
 
-  Container productImage(BuildContext context, int index, ShopController controller) {
+  Container productImage(BuildContext context, int index,
+      ShopController controller) {
     return Container(
       width: context.width * 0.3,
       height: context.height * 0.2,
@@ -95,28 +94,28 @@ class ShopView extends StatelessWidget {
     );
   }
 
-  Row priceRow(int index, BuildContext context, ShopController controller) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          '€ ${controller.productList?[index]?.price.toString() ??
-              'price'}',
-          style: Theme
-              .of(context)
-              .textTheme
-              .headline5,
-        ),
-        Obx(() {
-          return favouriteButton(index,controller);
-        })
-      ],
+  Padding priceRow(int index, BuildContext context, ShopController controller) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 15.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            '€ ${controller.productList?[index]?.price.toString() ?? 'price'}',
+            style: Theme
+                .of(context)
+                .textTheme
+                .headline5,
+          ),
+          favouriteButton(index, controller)
+        ],
+      ),
     );
   }
 
   IconButton favouriteButton(int index, ShopController controller) {
     return IconButton(
-      icon: controller.productList![index]!.isFavourite.value
+      icon: controller.productList![index]!.isFavourite
           ? Icon(
         Icons.favorite,
         color: Colors.red,
@@ -126,7 +125,7 @@ class ShopView extends StatelessWidget {
         color: Colors.red,
       ),
       onPressed: () {
-        controller.productList?[index]?.changeFavourite();
+        controller.changeFavourite(index);
       },
     );
   }
